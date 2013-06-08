@@ -2,6 +2,9 @@ package algorithm;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Properties;
 
 public class DiskOptimization {
@@ -25,6 +28,7 @@ public class DiskOptimization {
 	public void generateAnalysis() {
 		generateFCFS();
 		generateSSTF();
+		generateScan();
 	}
 
 	public void printSequence(String name, int location[]) {
@@ -63,6 +67,86 @@ public class DiskOptimization {
 	public void generateSSTF() {
 		int location[] = arrangeBySSTF(dp.getCurrent(), dp.getSequence());
 		printSequence("SSTF", location);
+	}
+
+	public void generateScan(){
+		int location[] = arrangeByScan(dp.getPrevious(),dp.getCurrent(),dp.getSequence());
+		printSequence("Scan",location);
+	}
+	
+	private int[] arrangeByScan(int previous, int current, int[] sequence) {
+		
+		int n = sequence.length;
+		int scan[] = new int[n+1];
+		ArrayList<Integer>scanright = new ArrayList<Integer>();
+		ArrayList<Integer>scanleft = new ArrayList<Integer>();
+		for(int i=0; i<n;i++){
+			scan[i] = sequence[i];
+		}
+		Arrays.sort(scan);
+		if(previous < current){
+			scanleft.add(dp.getCylinders());
+			for(int i=0; i<scan.length;i++){
+				if(scan[i]>current){
+					scanright.add(scan[i]);
+				}
+				
+				else if(scan[i]<current && scan[i] != 0){
+					scanleft.add(scan[i]);
+				}
+
+				
+			}
+			Collections.sort(scanleft);
+			Collections.reverse(scanleft);
+			Collections.sort(scanright);
+
+			int index = 0;
+			for(int i=0; i<scanright.size();i++){
+				scan[i] = scanright.get(i);
+				index+=1;
+			}
+			
+			
+			for(int i = 0; i<scanleft.size();i++){
+				scan[index] = scanleft.get(i);
+				index++;
+			}
+		}
+		
+		else if(previous > current){
+			
+
+			for(int i=0; i<scan.length;i++){
+				if(scan[i]<current){
+					scanleft.add(scan[i]);
+				}
+				
+				else if(scan[i]>current && scan[i] != dp.getCylinders()){
+					scanright.add(scan[i]);
+				}
+
+				
+			}
+			Collections.sort(scanleft);
+			Collections.reverse(scanleft);
+			Collections.sort(scanright);
+
+			int index = 0;
+			for(int i=0; i<scanleft.size();i++){
+				scan[i] = scanleft.get(i);
+				index+=1;
+			}
+			
+			
+			for(int i = 0; i<scanright.size();i++){
+				scan[index] = scanright.get(i);
+				index++;
+			}
+
+		}
+		
+		return scan;
 	}
 
 	private int[] arrangeBySSTF(int current, int sequence[]) {
