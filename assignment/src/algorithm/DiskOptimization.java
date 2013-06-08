@@ -158,6 +158,7 @@ private int[] arrangeByLook(int previous, int current, int[] sequence) {
 	private int[] arrangeByScan(int previous, int current, int[] sequence) {
 		
 		int n = sequence.length;
+		int scanr[] = null;
 		int scan[] = new int[n+1];
 		ArrayList<Integer>scanright = new ArrayList<Integer>();
 		ArrayList<Integer>scanleft = new ArrayList<Integer>();
@@ -166,7 +167,14 @@ private int[] arrangeByLook(int previous, int current, int[] sequence) {
 		}
 		Arrays.sort(scan);
 		if(previous < current){
-			scanleft.add(dp.getCylinders());
+			int cylinder = Arrays.binarySearch(scan, dp.getCylinders());
+			System.out.println(cylinder);
+			if(cylinder >= 0)
+				scanr = new int[n];
+			else{
+				scanr = new int[n+1];
+				scanleft.add(dp.getCylinders());
+			}
 			for(int i=0; i<scan.length;i++){
 				if(scan[i]>current){
 					scanright.add(scan[i]);
@@ -184,26 +192,33 @@ private int[] arrangeByLook(int previous, int current, int[] sequence) {
 
 			int index = 0;
 			for(int i=0; i<scanright.size();i++){
-				scan[i] = scanright.get(i);
+				scanr[i] = scanright.get(i);
 				index+=1;
 			}
 			
 			
 			for(int i = 0; i<scanleft.size();i++){
-				scan[index] = scanleft.get(i);
+				scanr[index] = scanleft.get(i);
 				index++;
 			}
 		}
 		
 		else if(previous > current){
+			int cylinder = Arrays.binarySearch(scan, 0);
+			System.out.println(cylinder);
+			if(cylinder > 0){
+				scanr = new int[n];
+			}
 			
-
+			else{
+				scanr = new int[n+1];
+			}
 			for(int i=0; i<scan.length;i++){
 				if(scan[i]<current){
 					scanleft.add(scan[i]);
 				}
 				
-				else if(scan[i]>current && scan[i] != dp.getCylinders()){
+				else if(scan[i]>current){
 					scanright.add(scan[i]);
 				}
 
@@ -213,21 +228,32 @@ private int[] arrangeByLook(int previous, int current, int[] sequence) {
 			Collections.reverse(scanleft);
 			Collections.sort(scanright);
 
+			for(int i=0; i<scanleft.size();i++){
+				System.out.println(scanleft.get(i));
+			}
+			
+			System.out.println();
+			for(int i=0; i<scanright.size();i++){
+				System.out.println(scanright.get(i));
+			}
+			
 			int index = 0;
 			for(int i=0; i<scanleft.size();i++){
-				scan[i] = scanleft.get(i);
+				scanr[i] = scanleft.get(i);
 				index+=1;
 			}
 			
 			
 			for(int i = 0; i<scanright.size();i++){
-				scan[index] = scanright.get(i);
+				if(cylinder > 0)
+				scanr[index-1] = scanright.get(i);
+				else
+				scanr[index] = scanright.get(i);
 				index++;
 			}
-
 		}
 		
-		return scan;
+		return scanr;
 	}
 
 	private int[] arrangeBySSTF(int current, int sequence[]) {
