@@ -17,6 +17,13 @@ public class DiskParameter {
 		for (int i = 0; i < token.length; i++) {
 			sequence[i] = Integer.parseInt(token[i]);
 		}
+		
+		for(int i = 0; i < sequence.length; i++){
+			if(sequence[i] > cylinders){
+				System.err.println("There is a mismatch between cylinders and sequence");
+				System.exit(0);
+			}
+		}
 	}
 
 	public int getPrevious() {
