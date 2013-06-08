@@ -123,26 +123,30 @@ private int[] arrangeByLook(int previous, int current, int[] sequence) {
 			//Organize arrays
 			Collections.sort(scanleft);
 			System.out.println("Sorted left = "+printOutArray(scanleft));
+			//Reverse the numbers on the left because after scanning the last number on the right, it will scan the closest(largest) number on the left
 			Collections.reverse(scanleft);
 			System.out.println("Reversed left = "+printOutArray(scanleft));
 			Collections.sort(scanright);
 			System.out.println("Sorted right = "+printOutArray(scanright));
 
-			int index = 0;
+			//Combine both sides into one array
+			//Insert scanright 1st because scanning starts to the right
+			int index = 0; //To keep track where is the last scanright element in look array so that we know where to start inserting scanleft 
 			for(int i=0; i<scanright.size();i++){
 				look[i] = scanright.get(i);
 				index+=1;
 			}
 			
-			
+			//Insert scanleft
 			for(int i = 0; i<scanleft.size();i++){
 				look[index] = scanleft.get(i);
 				index++;
 			}
+			System.out.println("Combine left and right = "+printOutArray(look));
 		}
 		
+		//For cases where scanning starts to the left
 		else if(previous > current){
-			
 
 			for(int i=0; i<look.length;i++){
 				if(look[i]<current){
@@ -180,16 +184,19 @@ private int[] arrangeByLook(int previous, int current, int[] sequence) {
 		
 		int n = sequence.length;
 		int scanr[] = null;
-		int scan[] = new int[n+1];
+		int scan[] = new int[n+1]; //Nid one more element for extreme left/right values in sequence. That element has default value of 0.
 		ArrayList<Integer>scanright = new ArrayList<Integer>();
 		ArrayList<Integer>scanleft = new ArrayList<Integer>();
 		for(int i=0; i<n;i++){
 			scan[i] = sequence[i];
 		}
 		Arrays.sort(scan);
+		System.out.println("Sorted = "+printOutArray(scan));
+		
+		//Scan right 1st
 		if(previous < current){
 			int cylinder = Arrays.binarySearch(scan, dp.getCylinders());
-			//System.out.println(cylinder);
+			//get zero
 			if(cylinder >= 0)
 				scanr = new int[n];
 			else{
