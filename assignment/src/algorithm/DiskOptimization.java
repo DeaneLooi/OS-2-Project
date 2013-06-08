@@ -204,11 +204,13 @@ private int[] arrangeByLook(int previous, int current, int[] sequence) {
 				scanleft.add(dp.getCylinders());
 			}
 			for(int i=0; i<scan.length;i++){
+				//separate values larger than current
 				if(scan[i]>current){
 					scanright.add(scan[i]);
 				}
 				
 				else if(scan[i]<current && scan[i] != 0){
+					//for other values
 					scanleft.add(scan[i]);
 				}
 
@@ -216,8 +218,11 @@ private int[] arrangeByLook(int previous, int current, int[] sequence) {
 			}
 			Collections.sort(scanleft);
 			Collections.reverse(scanleft);
+			//Once last right value is scanned,nearest(largest) left value will be scanned 
+			System.out.println("Left side = "+printOutArray(scanleft));
 			Collections.sort(scanright);
 
+			//combine left and right arrays
 			int index = 0;
 			for(int i=0; i<scanright.size();i++){
 				scanr[i] = scanright.get(i);
@@ -231,9 +236,9 @@ private int[] arrangeByLook(int previous, int current, int[] sequence) {
 			}
 		}
 		
+		//If need scan left 1st
 		else if(previous > current){
 			int cylinder = Arrays.binarySearch(scan, 0);
-			System.out.println(cylinder);
 			if(cylinder > 0){
 				scanr = new int[n];
 			}
@@ -256,15 +261,6 @@ private int[] arrangeByLook(int previous, int current, int[] sequence) {
 			Collections.reverse(scanleft);
 			Collections.sort(scanright);
 
-			for(int i=0; i<scanleft.size();i++){
-				System.out.println(scanleft.get(i));
-			}
-			
-			System.out.println();
-			for(int i=0; i<scanright.size();i++){
-				System.out.println(scanright.get(i));
-			}
-			
 			int index = 0;
 			for(int i=0; i<scanleft.size();i++){
 				scanr[i] = scanleft.get(i);
@@ -273,8 +269,10 @@ private int[] arrangeByLook(int previous, int current, int[] sequence) {
 			
 			
 			for(int i = 0; i<scanright.size();i++){
+				//for sequences that includes right end of cylinder
 				if(cylinder > 0)
 				scanr[index-1] = scanright.get(i);
+				//for sequences that includes left end of cylinder
 				else
 				scanr[index] = scanright.get(i);
 				index++;
