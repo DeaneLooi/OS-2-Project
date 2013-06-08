@@ -18,6 +18,9 @@ public class DiskParameter {
 			sequence[i] = Integer.parseInt(token[i]);
 		}
 		
+		/*
+		 * added a method to check for errors in cylinders and sequence
+		 */
 		for(int i = 0; i < sequence.length; i++){
 			if(sequence[i] > cylinders){
 				System.err.println("There is a mismatch between cylinders and sequence");
