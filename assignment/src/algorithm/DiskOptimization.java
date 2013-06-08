@@ -50,7 +50,6 @@ public class DiskOptimization {
 			previous = current;
 		}
 
-		System.out.println(name + '\n' + "====");
 		System.out.println("Order of Access: " + sequence);
 
 		System.out.println("Total Distance = "
@@ -61,51 +60,73 @@ public class DiskOptimization {
 	}
 
 	public void generateFCFS() {
+		System.out.println("FCFS" + '\n' + "====");
 		int location[] = dp.getSequence();
 		printSequence("FCFS", location);
 	}
 
 	public void generateSSTF() {
+		System.out.println("SSTF" + '\n' + "====");
 		int location[] = arrangeBySSTF(dp.getCurrent(), dp.getSequence());
 		printSequence("SSTF", location);
 	}
 
 	public void generateScan(){
+		System.out.println("Scan" + '\n' + "====");
 		int location[] = arrangeByScan(dp.getPrevious(),dp.getCurrent(),dp.getSequence());
 		printSequence("Scan",location);
 	}
 	
 	public void generateLook(){
+		System.out.println("Look" + '\n' + "====");
 		int location[] = arrangeByLook(dp.getPrevious(),dp.getCurrent(),dp.getSequence());
 		printSequence("Look",location);
 	}
 	
 private int[] arrangeByLook(int previous, int current, int[] sequence) {
-		
+	
+	//create empty array to hold rearranged values
 		int n = sequence.length;
 		int look[] = new int[n];
+		
+		//Arrays to hold values left and right of current value
 		ArrayList<Integer>scanright = new ArrayList<Integer>();
 		ArrayList<Integer>scanleft = new ArrayList<Integer>();
+		
+		//Copying sequence array into look[]
 		for(int i=0; i<n;i++){
 			look[i] = sequence[i];
 		}
+		System.out.println("Initial Sequence: "+ printOutArray(look));
+		
+		//Sort look[]
 		Arrays.sort(look);
+		System.out.println("After 1st sort: "+printOutArray(look));
+		
+		//If scanning right 1st
 		if(previous < current){
-			//scanleft.add(dp.getCylinders());
+			System.out.println("Scanning to the right... Current = "+current);
 			for(int i=0; i<look.length;i++){
+				//Put all values larger than current to right
 				if(look[i]>current){
 					scanright.add(look[i]);
 				}
-				
-				else if(look[i]<current){ //&& look[i] != 0
+				//Other values to left
+				else if(look[i]<current){ 
 					scanleft.add(look[i]);
 				}
-
-				
 			}
+			
+			System.out.println("Numbers on the right of current = "+printOutArray(scanright));
+			System.out.println("Numbers on the left of current = "+printOutArray(scanleft));
+			
+			//Organize arrays
 			Collections.sort(scanleft);
+			System.out.println("Sorted left = "+printOutArray(scanleft));
 			Collections.reverse(scanleft);
+			System.out.println("Reversed left = "+printOutArray(scanleft));
 			Collections.sort(scanright);
+			System.out.println("Sorted right = "+printOutArray(scanright));
 
 			int index = 0;
 			for(int i=0; i<scanright.size();i++){
@@ -168,7 +189,7 @@ private int[] arrangeByLook(int previous, int current, int[] sequence) {
 		Arrays.sort(scan);
 		if(previous < current){
 			int cylinder = Arrays.binarySearch(scan, dp.getCylinders());
-			System.out.println(cylinder);
+			//System.out.println(cylinder);
 			if(cylinder >= 0)
 				scanr = new int[n];
 			else{
@@ -280,5 +301,24 @@ private int[] arrangeByLook(int previous, int current, int[] sequence) {
 			current = sstf[i];
 		}
 		return sstf;
+	}
+	public  String printOutArray(int[] array)
+	{
+		String printSequence="";
+		for(int i=0; i<array.length;i++){
+			int printOut = array[i];
+			printSequence+=printOut+",";
+		}
+	    return printSequence;
+	}
+	
+	public  String printOutArray(ArrayList<Integer> array)
+	{
+		String printSequence="";
+		for(int i=0; i<array.size();i++){
+			int printOut = array.get(i);
+			printSequence+=printOut+",";
+		}
+	    return printSequence;
 	}
 }
