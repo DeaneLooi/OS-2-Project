@@ -29,6 +29,7 @@ public class DiskOptimization {
 		generateFCFS();
 		generateSSTF();
 		generateScan();
+		generateLook();
 	}
 
 	public void printSequence(String name, int location[]) {
@@ -74,6 +75,86 @@ public class DiskOptimization {
 		printSequence("Scan",location);
 	}
 	
+	public void generateLook(){
+		int location[] = arrangeByLook(dp.getPrevious(),dp.getCurrent(),dp.getSequence());
+		printSequence("Look",location);
+	}
+	
+private int[] arrangeByLook(int previous, int current, int[] sequence) {
+		
+		int n = sequence.length;
+		int look[] = new int[n];
+		ArrayList<Integer>scanright = new ArrayList<Integer>();
+		ArrayList<Integer>scanleft = new ArrayList<Integer>();
+		for(int i=0; i<n;i++){
+			look[i] = sequence[i];
+		}
+		Arrays.sort(look);
+		if(previous < current){
+			//scanleft.add(dp.getCylinders());
+			for(int i=0; i<look.length;i++){
+				if(look[i]>current){
+					scanright.add(look[i]);
+				}
+				
+				else if(look[i]<current){ //&& look[i] != 0
+					scanleft.add(look[i]);
+				}
+
+				
+			}
+			Collections.sort(scanleft);
+			Collections.reverse(scanleft);
+			Collections.sort(scanright);
+
+			int index = 0;
+			for(int i=0; i<scanright.size();i++){
+				look[i] = scanright.get(i);
+				index+=1;
+			}
+			
+			
+			for(int i = 0; i<scanleft.size();i++){
+				look[index] = scanleft.get(i);
+				index++;
+			}
+		}
+		
+		else if(previous > current){
+			
+
+			for(int i=0; i<look.length;i++){
+				if(look[i]<current){
+					scanleft.add(look[i]);
+				}
+				
+				else if(look[i]>current){ //&& look[i] != dp.getCylinders()
+					scanright.add(look[i]);
+				}
+
+				
+			}
+			Collections.sort(scanleft);
+			Collections.reverse(scanleft);
+			Collections.sort(scanright);
+
+			int index = 0;
+			for(int i=0; i<scanleft.size();i++){
+				look[i] = scanleft.get(i);
+				index+=1;
+			}
+			
+			
+			for(int i = 0; i<scanright.size();i++){
+				look[index] = scanright.get(i);
+				index++;
+			}
+
+		}
+		
+		return look;
+	}
+
 	private int[] arrangeByScan(int previous, int current, int[] sequence) {
 		
 		int n = sequence.length;
