@@ -1,4 +1,4 @@
-package algorithm; 
+package algorithm;  
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -338,6 +338,7 @@ public class DiskOptimization {
 	}
 
 	public String printOutArray(int[] array) {
+		// prints out array
 		String printSequence = "";
 		for (int i = 0; i < array.length; i++) {
 			int printOut = array[i];
@@ -347,6 +348,7 @@ public class DiskOptimization {
 	}
 
 	public String printOutArray(ArrayList<Integer> array) {
+		// prints out arrayList
 		String printSequence = "";
 		for (int i = 0; i < array.size(); i++) {
 			int printOut = array.get(i);
