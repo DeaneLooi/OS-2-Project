@@ -9,7 +9,7 @@ import java.util.Properties;
 
 public class DiskOptimization {
 	Properties p = new Properties();
-	DiskParameter dp = null;
+	public DiskParameter dp = null;
 
 	public static void main(String args[]) {
 		// take in diskq1.properties
@@ -34,7 +34,8 @@ public class DiskOptimization {
 		generateLook();
 	}
 
-	public void printSequence(String name, int location[]) {
+	public String printSequence(String name, int location[]) {
+		String string = "";
 		String sequence = "";
 		String working1 = "";
 		String working2 = "";
@@ -61,46 +62,45 @@ public class DiskOptimization {
 			total += d;
 			previous = current;
 		}
+		string += name+"\n"+"====";
+		
+		string += "\nOrder of Access: " + sequence;
 
-		System.out.println("Order of Access: " + sequence);
-
-		System.out.println("Total Distance = "
-				+ working1.substring(0, working1.length() - 1));
-		System.out.println("               = "
-				+ working2.substring(0, working2.length() - 2));
-		System.out.println("               = " + total + '\n');
+		string += "\nTotal Distance = "
+				+ working1.substring(0, working1.length() - 1);
+		string += "\n               = "
+				+ working2.substring(0, working2.length() - 2);
+		string += "\n               = " + total + '\n';
+		
+		return string;
 	}
 
 	// take in values from "dp" and puts it into location array
 	// runs location array into methods
 	// true for all 4 types
 	public void generateFCFS() {
-		System.out.println("FCFS" + '\n' + "====");
 		int location[] = dp.getSequence();
-		printSequence("FCFS", location);
+		System.out.println(printSequence("FCFS", location));
 	}
 
 	public void generateSSTF() {
-		System.out.println("SSTF" + '\n' + "====");
 		int location[] = arrangeBySSTF(dp.getCurrent(), dp.getSequence());
-		printSequence("SSTF", location);
+		System.out.println(printSequence("SSTF", location));
 	}
 
 	public void generateScan() {
-		System.out.println("Scan" + '\n' + "====");
 		int location[] = arrangeByScan(dp.getPrevious(), dp.getCurrent(),
 				dp.getSequence());
-		printSequence("Scan", location);
+		System.out.println(printSequence("Scan", location));
 	}
 
 	public void generateLook() {
-		System.out.println("Look" + '\n' + "====");
 		int location[] = arrangeByLook(dp.getPrevious(), dp.getCurrent(),
 				dp.getSequence());
-		printSequence("Look", location);
+		System.out.println(printSequence("Look", location));
 	}
 
-	private int[] arrangeByLook(int previous, int current, int[] sequence) {
+	public int[] arrangeByLook(int previous, int current, int[] sequence) {
 
 		// create empty array to hold rearranged values
 		int n = sequence.length;
@@ -202,7 +202,7 @@ public class DiskOptimization {
 		return look;
 	}
 
-	private int[] arrangeByScan(int previous, int current, int[] sequence) {
+	public int[] arrangeByScan(int previous, int current, int[] sequence) {
 
 		int n = sequence.length;
 		int scanr[] = null;
@@ -303,7 +303,7 @@ public class DiskOptimization {
 		return scanr;
 	}
 
-	private int[] arrangeBySSTF(int current, int sequence[]) {
+	public int[] arrangeBySSTF(int current, int sequence[]) {
 		int n = sequence.length;
 		int sstf[] = new int[n];
 		// sstf array stores the calculated values

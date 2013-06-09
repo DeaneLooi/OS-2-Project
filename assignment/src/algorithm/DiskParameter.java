@@ -14,8 +14,20 @@ public class DiskParameter {
 		 * Position.Current=143 Position.Previous=125
 		 * Sequence=86,1470,913,1774,948,1509,1022,1750,130
 		 */
+		if(p.getProperty("Cylinders")!=null)
 		this.cylinders = Integer.parseInt(p.getProperty("Cylinders"));
+		else{
+			System.err.println("There is a error in the file type");
+			System.exit(1);
+			/*
+			 * this checks the file type
+			 * if it is not .properties, it will exit the operation
+			 */
+		}
+			
+
 		this.current = Integer.parseInt(p.getProperty("Position.Current"));
+
 		this.previous = Integer.parseInt(p.getProperty("Position.Previous"));
 		/*
 		 * Get values for cylinders and positions above, create an array to take
@@ -34,11 +46,13 @@ public class DiskParameter {
 			if (sequence[i] > cylinders) {
 				System.err
 						.println("There is a mismatch between cylinders and sequence");
-				System.exit(0);
+				System.exit(1);
 			}
+			
+			
 		}
 	}
-
+	
 	public int getPrevious() {
 		return previous;
 	}
