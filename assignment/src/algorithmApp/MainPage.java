@@ -31,10 +31,9 @@ public class MainPage extends JPanel {
 	JFrame f;
 	JTextPane outPut = new JTextPane();
 	String fileName = "";
-	JFileChooser jFileChooser =null;
+	JFileChooser jFileChooser = null;
 	private JTextField jTextFieldFile;
 
-	
 	/**
 	 * @wbp.parser.constructor
 	 */
@@ -49,16 +48,14 @@ public class MainPage extends JPanel {
 		header.setToolTipText("");
 		header.setBounds(580, 10, 230, 35);
 		add(header);
-		
-		
 
 		JButton btnFCFS = new JButton("FCFS");
 		btnFCFS.setFont(new Font("Franklin Gothic Heavy", Font.BOLD, 15));
 		btnFCFS.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				DiskOptimization DO = new DiskOptimization(fileName);
-				int[] sequence =  DO.dp.getSequence();
-				String text = DO.printSequence("FCFS",sequence);
+				int[] sequence = DO.dp.getSequence();
+				String text = DO.printSequence("FCFS", sequence);
 				outPut.setText(text);
 			}
 		});
@@ -70,8 +67,9 @@ public class MainPage extends JPanel {
 		btnLook.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				DiskOptimization DO = new DiskOptimization(fileName);
-				int[] sequence =  DO.arrangeByLook(DO.dp.getPrevious(), DO.dp.getCurrent(), DO.dp.getSequence());
-				String text = DO.printSequence("Look",sequence);
+				int[] sequence = DO.arrangeByLook(DO.dp.getPrevious(),
+						DO.dp.getCurrent(), DO.dp.getSequence());
+				String text = DO.printSequence("Look", sequence);
 				outPut.setText(text);
 			}
 		});
@@ -83,9 +81,10 @@ public class MainPage extends JPanel {
 		btnScan.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				DiskOptimization DO = new DiskOptimization(fileName);
-				int[] sequence =  DO.arrangeByScan(DO.dp.getPrevious(), DO.dp.getCurrent(),DO.dp.getSequence());
-				String text = DO.printSequence("Scan",sequence);
-				
+				int[] sequence = DO.arrangeByScan(DO.dp.getPrevious(),
+						DO.dp.getCurrent(), DO.dp.getSequence());
+				String text = DO.printSequence("Scan", sequence);
+
 				outPut.setText(text);
 			}
 		});
@@ -97,59 +96,85 @@ public class MainPage extends JPanel {
 		btnSSTF.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				DiskOptimization DO = new DiskOptimization(fileName);
-				int[] sequence =  DO.arrangeBySSTF(DO.dp.getCurrent(), DO.dp.getSequence());
-				String text = DO.printSequence("SSTF",sequence);
+				int[] sequence = DO.arrangeBySSTF(DO.dp.getCurrent(),
+						DO.dp.getSequence());
+				String text = DO.printSequence("SSTF", sequence);
 				outPut.setText(text);
-			}  
+			}
 		});
 		btnSSTF.setBounds(800, 200, 100, 50);
 		add(btnSSTF);
-		
+		outPut.setEditable(false);
 
 		outPut.setBounds(75, 304, 1200, 400);
 		add(outPut);
-		
+
 		JButton btnBrowse = new JButton("Browse");
 		btnBrowse.setBounds(289, 100, 105, 35);
-		btnBrowse.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e){
+		btnBrowse.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				jButtonBrowseActionPerformed();
 			}
 		});
 		add(btnBrowse);
-		
+
 		jTextFieldFile = new JTextField();
 		jTextFieldFile.setBounds(35, 100, 216, 35);
 		add(jTextFieldFile);
 		jTextFieldFile.setColumns(10);
 
+		JButton btnCscan = new JButton("C-Scan");
+		btnCscan.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				DiskOptimization DO = new DiskOptimization(fileName);
+				int[] sequence = DO.arrangeByCScan(DO.dp.getPrevious(),
+						DO.dp.getCurrent(), DO.dp.getSequence());
+				String text = DO.printSequence("C-Scan", sequence);
+				outPut.setText(text);
+			}
+		});
+		btnCscan.setFont(new Font("Franklin Gothic Heavy", Font.BOLD, 15));
+		btnCscan.setBounds(1100, 100, 100, 50);
+		add(btnCscan);
 
-		}
-	
-	private void jButtonBrowseActionPerformed(){
+		JButton btnClook = new JButton("C-Look");
+		btnClook.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				DiskOptimization DO = new DiskOptimization(fileName);
+				int[] sequence = DO.arrangeByCLook(DO.dp.getPrevious(),
+						DO.dp.getCurrent(), DO.dp.getSequence());
+				String text = DO.printSequence("C-Look", sequence);
+				outPut.setText(text);
+			}
+		});
+		btnClook.setFont(new Font("Franklin Gothic Heavy", Font.BOLD, 15));
+		btnClook.setBounds(1100, 200, 100, 50);
+		add(btnClook);
+
+	}
+
+	private void jButtonBrowseActionPerformed() {
 		String fileName = getFile();
 		jTextFieldFile.setText(fileName);
 		jButtonLoadActionPerformed();
 	}
-	
-	private void jButtonLoadActionPerformed(){
+
+	private void jButtonLoadActionPerformed() {
 		String fileName = jTextFieldFile.getText();
 		this.fileName = fileName;
 		JOptionPane.showMessageDialog(null, "Your file has been loaded!");
 	}
-	private String getFile(){
+
+	private String getFile() {
 		String fileName = null;
-		jFileChooser = new JFileChooser();
+		jFileChooser = new JFileChooser("D:\\OS-2-Project\\OS-2-Project\\assignment");
 		int retval = jFileChooser.showOpenDialog(null);
-		if ( retval == JFileChooser.APPROVE_OPTION){
+		if (retval == JFileChooser.APPROVE_OPTION) {
 			File file = jFileChooser.getSelectedFile();
 			fileName = file.getPath();
-		}
-		else 
-			System.out.println("retval =" + fileName + "--" + 
-								JFileChooser.APPROVE_OPTION);
+		} else
+			System.out.println("retval =" + fileName + "--"
+					+ JFileChooser.APPROVE_OPTION);
 		return fileName;
 	}
-	
-	
 }

@@ -32,6 +32,8 @@ public class DiskOptimization {
 		generateSSTF();
 		generateScan();
 		generateLook();
+		generateCScan();
+		generateCLook();
 	}
 
 	public String printSequence(String name, int location[]) {
@@ -100,6 +102,17 @@ public class DiskOptimization {
 		System.out.println(printSequence("Look", location));
 	}
 
+	public void generateCScan() {
+		int location[] = arrangeByCScan(dp.getPrevious(), dp.getCurrent(), dp.getSequence());
+		System.out.println(printSequence("C-Scan",location));
+	}
+	
+	public void generateCLook() {
+		int location[] = arrangeByCLook(dp.getPrevious(), dp.getCurrent(), dp.getSequence());
+		System.out.println(printSequence("C-Look",location));
+	}
+	
+	
 	public int[] arrangeByLook(int previous, int current, int[] sequence) {
 
 		// create empty array to hold rearranged values
@@ -201,7 +214,101 @@ public class DiskOptimization {
 
 		return look;
 	}
+	
+	public int[] arrangeByCLook(int previous, int current, int[] sequence) {
 
+		// create empty array to hold rearranged values
+		int n = sequence.length;
+		int look[] = new int[n];
+
+		// Arrays to hold values left and right of current value
+		ArrayList<Integer> scanright = new ArrayList<Integer>();
+		ArrayList<Integer> scanleft = new ArrayList<Integer>();
+
+		// Copying sequence array into look[]
+		for (int i = 0; i < n; i++) {
+			look[i] = sequence[i];
+		}
+
+		// Sort look[]
+		Arrays.sort(look);
+
+		// If scanning right 1st
+		if (previous < current) {
+			for (int i = 0; i < look.length; i++) {
+				// Put all values larger than current to right
+				if (look[i] > current) {
+					scanright.add(look[i]);
+				}
+				// Other values to left
+				else if (look[i] < current) {
+					scanleft.add(look[i]);
+				}
+			}
+
+
+			// Organize arrays
+			Collections.sort(scanleft);
+			// Reverse the numbers on the left because after scanning the last
+			// number on the right, it will scan the closest(largest) number on
+			// the left
+
+			Collections.sort(scanright);
+
+
+			// Combine both sides into one array
+			// Insert scanright 1st because scanning starts to the right
+			int index = 0; // To keep track where is the last scanright element
+							// in look array so that we know where to start
+							// inserting scanleft
+			for (int i = 0; i < scanright.size(); i++) {
+				look[i] = scanright.get(i);
+				index += 1;
+			}
+
+			// Insert scanleft
+			for (int i = 0; i < scanleft.size(); i++) {
+				look[index] = scanleft.get(i);
+				index++;
+			}
+
+		}
+
+		// For cases where scanning starts to the left
+		else if (previous > current) {
+
+			for (int i = 0; i < look.length; i++) {
+				if (look[i] < current) {
+					scanleft.add(look[i]);
+				}
+
+				else if (look[i] > current) { // && look[i] != dp.getCylinders()
+					scanright.add(look[i]);
+				}
+
+			}
+			Collections.sort(scanleft);
+			Collections.reverse(scanleft);
+			Collections.sort(scanright);
+			Collections.reverse(scanright);
+
+			int index = 0;
+			for (int i = 0; i < scanleft.size(); i++) {
+				look[i] = scanleft.get(i);
+				index += 1;
+			}
+
+			for (int i = 0; i < scanright.size(); i++) {
+				look[index] = scanright.get(i);
+				index++;
+			}
+
+		}
+
+		return look;
+	}
+
+	
 	public int[] arrangeByScan(int previous, int current, int[] sequence) {
 
 		int n = sequence.length;
@@ -302,6 +409,133 @@ public class DiskOptimization {
 
 		return scanr;
 	}
+	public int[] arrangeByCScan(int previous, int current, int[] sequence) {
+
+		int n = sequence.length;
+		int scanr[] = null;
+		int scan[] = new int[n];
+		// Need one more element for extreme left/right values in sequence.
+		// That element has default value of 0.
+		ArrayList<Integer> scanright = new ArrayList<Integer>();
+		ArrayList<Integer> scanleft = new ArrayList<Integer>();
+		for (int i = 0; i < n; i++) {
+			scan[i] = sequence[i];
+		}
+		Arrays.sort(scan);
+
+		// Scan right 1st
+		if (previous < current) {
+			int cylinder = Arrays.binarySearch(scan, dp.getCylinders());
+			int zero = Arrays.binarySearch(scan, 0);
+			// get zero
+			if (cylinder >= 0 && zero >= 0){
+				scanr = new int[n];
+				scanleft.add(0);
+			}
+			else if(cylinder >= 0 && zero < 0){
+				scanr = new int[n + 1];
+				scanright.add(dp.getCylinders());
+			}
+			
+			else if(cylinder <=0 && zero >=0){
+				scanr = new int[n + 1];
+				scanleft.add(0);
+			}
+			
+			else if(cylinder < 0 && zero < 0){
+				scanr = new int[n+2];
+				scanright.add(dp.getCylinders());
+				scanleft.add(0);
+			}
+			for (int i = 0; i < scan.length; i++) {
+				// separate values larger than current
+				if (scan[i] > current) {
+					scanright.add(scan[i]);
+				}
+
+				else if (scan[i] < current && scan[i] != 0) {
+					// for other values
+					scanleft.add(scan[i]);
+				}
+
+			}
+			Collections.sort(scanleft);
+			// Once last right value is scanned,nearest(largest) left value will
+			// be scanned
+			Collections.sort(scanright);
+
+			// combine left and right arrays
+			int index = 0;
+			for (int i = 0; i < scanright.size(); i++) {
+				scanr[i] = scanright.get(i);
+				index += 1;
+			}
+
+			for (int i = 0; i < scanleft.size(); i++) {
+				scanr[index] = scanleft.get(i);
+				index++;
+			}
+		}
+
+		// If need scan left 1st
+		else if (previous > current) {
+			int cylinder = Arrays.binarySearch(scan, dp.getCylinders());
+			int zero = Arrays.binarySearch(scan, 0);
+			// get zero
+			if (cylinder >= 0 && zero >= 0){
+				scanr = new int[n];
+				scanleft.add(0);
+			}
+			else if(cylinder >= 0 && zero < 0){
+				scanr = new int[n + 1];
+				scanright.add(dp.getCylinders());
+			}
+			
+			else if(cylinder <=0 && zero >=0){
+				scanr = new int[n + 1];
+				scanleft.add(0);
+			}
+			
+			else if(cylinder < 0 && zero < 0){
+				scanr = new int[n+2];
+				scanright.add(dp.getCylinders());
+				scanleft.add(0);
+			}
+			for (int i = 0; i < scan.length; i++) {
+				if (scan[i] < current) {
+					scanleft.add(scan[i]);
+				}
+
+				else if (scan[i] > current) {
+					scanright.add(scan[i]);
+				}
+
+			}
+			Collections.sort(scanleft);
+			Collections.reverse(scanleft);
+			Collections.sort(scanright);
+			Collections.reverse(scanright);
+
+			int index = 0;
+			for (int i = 0; i < scanleft.size(); i++) {
+				scanr[i] = scanleft.get(i);
+				index += 1;
+			}
+
+			for (int i = 0; i < scanright.size(); i++) {
+				// for sequences that includes right end of cylinder
+				if (cylinder > 0)
+					scanr[index - 1] = scanright.get(i);
+				// for sequences that includes left end of cylinder
+				else
+					scanr[index] = scanright.get(i);
+				index++;
+			}
+		}
+
+		return scanr;
+	}
+	
 
 	public int[] arrangeBySSTF(int current, int sequence[]) {
 		int n = sequence.length;
